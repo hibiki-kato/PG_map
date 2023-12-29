@@ -13,16 +13,16 @@ int main(){
     params.a = 1.8;
     params.a_prime = 1.7;
     params.omega = 0.225;
-    long long n = 100000;
+    long long n = 10000;
     long long dump = 0;
     Eigen::VectorXd x_0 = npy2EigenVec<double>("../initials/a1.8-1.7_omega0.225_n100.npy", true);
     double epsilon = 0.1;
     double check = 100;
     double progress = 10;
     int perturb_min = -15;
-    int perturb_max = -8;
-    int limit = 1e+8; //limitation of trial of stagger and step
-    int numThreads = omp_get_max_threads();
+    int perturb_max = -13;
+    int limit = 1e+7; //limitation of trial of stagger and step
+    int numThreads = 1;
 
     PGMap PG(params, n, dump, x_0);
     Eigen::MatrixXd calced_laminar = myfunc::SaS_of_map(PG, isLaminar, epsilon, progress, check, perturb_min, perturb_max, limit, numThreads);
@@ -57,7 +57,7 @@ int main(){
     plt::scatter(x,y);
 
     std::ostringstream oss;
-    oss << "../../generated_lam_img/gen_laminar_a" << params.a << "-" << params.a_prime << "_omega" << params.omega << "_n" << n << "_check" << check << "_progress" << progress << "_perturb" << perturb_min << "-" << perturb_max << ".png";
+    oss << "../../generated_lam_img/gen_laminar_a" << params.a << "-" << params.a_prime << "_omega" << params.omega << "_n" << n << "_check" << check << "_progress" << progress << "_perturb" << perturb_min  << perturb_max << "epsilon" << epsilon << ".png";
     std::string filename = oss.str(); // 文字列を取得する
     if (calced_laminar.cols() > 1){
         std::cout << "\n Saving result to " << filename << std::endl;
@@ -89,12 +89,12 @@ int main(){
     oss.str("");
     if(calced_laminar.cols() > 1){
         if (progress == n){
-            oss << "../../initials/a" << params.a << "-" << params.a_prime << "_omega" << params.omega << "_n" << n << ".npy";
+            oss << "../../initials/a" << params.a << "-" << params.a_prime << "_omega" << params.omega << "_n" << n << "epsilon" << epsilon << ".npy";
             std::string fname = oss.str(); // 文字列を取得する
             std::cout << "saving as " << fname << std::endl;
             EigenVec2npy(calced_laminar.col(0), fname);
         } else{
-            oss << "../../generated_lam/gen_laminar_a" << params.a << "-" << params.a_prime << "_omega" << params.omega << "_n" << n << "_check" << check << "_progress" << progress << "_perturb" << perturb_min << "-" << perturb_max << ".npy";
+            oss << "../../generated_lam/gen_laminar_a" << params.a << "-" << params.a_prime << "_omega" << params.omega << "_n" << n << "_check" << check << "_progress" << progress << "_perturb" << perturb_min << perturb_max << "epsilon" << epsilon << ".npy";
             std::string fname = oss.str(); // 文字列を取得する
             std::cout << "saving as " << fname << std::endl;
             EigenMat2npy(calced_laminar, fname);

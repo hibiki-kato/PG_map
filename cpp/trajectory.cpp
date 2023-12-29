@@ -11,11 +11,11 @@ int main(){
     PGparams params;
     params.a = 1.8;
     params.a_prime = 1.7;
-    params.omega = 0.3;
+    params.omega = 0.15;
     long long n = 1e+5;
     long long dump = 1e+3;
     Eigen::VectorXd x_0(2);
-    x_0 << 0.5, 0.5;
+    x_0 << 0.4534, 0.531;
 
     PGMap PG(params, n, dump, x_0);
     Eigen::MatrixXd trajectory = PG.get_trajectory();
@@ -28,6 +28,17 @@ int main(){
     plt::scatter(x, y);
     plt::xlim(0, 1);
     plt::ylim(0, 1);
-    plt::show();
+    std::ostringstream oss;
+    oss << "../../traj_img/a" << params.a << "-" << params.a_prime << "_omega" << params.omega << "_n" << n << ".png";
+    std::string plotfname = oss.str(); // 文字列を取得する
+    std::cout << "saving image to" << plotfname <<std::endl;
+    plt::save(plotfname);
+
+    oss.str("");
+    oss << "../../traj/a" << params.a << "-" << params.a_prime << "_omega" << params.omega << "_n" << n << ".npy";
+    std::string fname = oss.str(); // 文字列を取得する
+    std::cout << "saving result to" << fname <<std::endl;
+    EigenMat2npy(trajectory, fname);
+    
     myfunc::duration(start);
 }
